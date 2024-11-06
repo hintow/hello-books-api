@@ -38,3 +38,39 @@ def test_create_one_book(client):
         "description" : "The Best!"
     }
 
+def test_create_one_book_with_no_title(client):
+    #arrange
+    test_data = {"description": "The Best!"}
+
+    #act & assert
+    with pytest.raises(KeyError, match='title'):
+        response = client.post('/books', json=test_data)
+
+def test_create_one_book_with_no_description(client):
+    #arrange
+    test_data = {"title": "New Book"}
+
+    #Act & Assert
+    with pytest.raises(KeyError, match='description'):
+        response = client.post("/books",json=test_data)
+
+def test_create_one_book_with_extra_keys(client):
+    #Arrange
+    test_data = {
+         "extra": "some stuff",
+        "title": "New Book",
+        "description": "The Best!",
+        "another": "last value"
+    }
+
+    #Act
+    response = client.post("/books",json=test_data)
+    response_body = response.get_json()
+
+    #Assert
+    assert response.status_code == 201
+    assert response.response_body == {
+        "id": 1,
+        "title": "New Book",
+        "description": "The Best!"
+    }

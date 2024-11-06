@@ -28,6 +28,10 @@ def app():
         db.drop_all()
 
 @pytest.fixture
+def client(app):
+    return app.test_client()
+
+@pytest.fixture
 def two_saved_books(app):
     #Arrange
     ocean_book = Book(title="Ocean Book",
@@ -37,7 +41,4 @@ def two_saved_books(app):
     
     db.session.add_all([ocean_book,mountain_book])
     db.session.commit()
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
+    
